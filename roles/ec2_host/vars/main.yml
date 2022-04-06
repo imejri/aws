@@ -1,0 +1,12 @@
+---
+# vars file for webserver
+
+key_dest: "/root/.ssh/key.pem"
+region: "us-east-1"
+image_id: "ami-0b0af3577fe5e3532"
+count: ""
+tag_name: "from-ansible"
+port: "80"
+subnet_id: "subnet-06e146e6cb69fb62d"
+instance_type: "t2.micro"
+

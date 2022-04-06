@@ -1,0 +1,39 @@
+---
+# tasks file for webserver
+- name: Create Security Group 
+  ec2_group:
+      name: devops-group
+      description: sg from ansible
+      region: "{{ region }}"
+      rules:
+      - proto: tcp
+        from_port: "{{ port }}"
+        to_port: 80 
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 22
+        to_port: 22
+        cidr_ip: 0.0.0.0/0
+      rules_egress:
+      - proto: all
+        cidr_ip: 0.0.0.0/0
+  register: sg_ansible
+- name: Launch EC2 Instance
+  ec2:
+      key_name: devops
+      instance_type: "{{ instance_type }}"
+      image: "{{ image_id }}"
+      wait: yes
+      region: "{{ region }}"
+      count: "{{ count }}"
+      vpc_subnet_id: "{{ subnet_id }}"
+      group_id: "{{ sg_ansible.group_id }}"
+      assign_public_ip: yes
+      state: present
+      instance_tags:
+        Name: "{{ tag_name }}"
+  register: ec2
+- name: Refresh Inventory File
+  meta: refresh_inventory
+- pause:
+    minutes: 1
